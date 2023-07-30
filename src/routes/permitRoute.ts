@@ -1,5 +1,5 @@
 import express from "express";
-import loadController from "../controller/loadController"
+import loadController from "../controller/permitController"
 
 const router = express.Router()
 

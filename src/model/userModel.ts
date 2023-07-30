@@ -1,19 +1,25 @@
 import mongoose from "mongoose";
 
 export interface userAttributes {
-  fName: string;
-  phone: string;
+  name: string;
   email: string;
+  password: string;
   _id: string;
 }
 
 const UserSchema = new mongoose.Schema(
   {
-    fName: { type: String, required: true },
-    phone: { type: String, required: true },
-    email: { type: String, required: true },
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
   },
   {
+    toJSON: {
+      transform(doc, ret) {
+        delete ret.password;
+        delete ret.salt;
+      },
+    },
     timestamps: true,
   }
 );

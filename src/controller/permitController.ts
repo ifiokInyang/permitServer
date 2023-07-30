@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import { sendgridEmail } from "../utils/notification";
-import { option, loadSchema } from "../utils/validation";
-import UserLoad from "../model/loadModel";
+import { option} from "../utils/validation";
+import UserLoad from "../model/permitModel";
 
 const processLoad = async (req: Request, res: Response) => {
   try {
@@ -21,12 +21,12 @@ const processLoad = async (req: Request, res: Response) => {
       ac,
       otherLoads,
     } = req.body;
-    const validateResult = loadSchema.validate(req.body, option);
-    if (validateResult.error) {
-      return res.status(400).json({
-        Error: validateResult.error.details[0].message,
-      });
-    }
+    // const validateResult = loadSchema.validate(req.body, option);
+    // if (validateResult.error) {
+    //   return res.status(400).json({
+    //     Error: validateResult.error.details[0].message,
+    //   });
+    // }
 
     const newLoad = await UserLoad.create({
       email,

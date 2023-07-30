@@ -4,7 +4,7 @@ import logger from "morgan";
 import mongoose from "mongoose";
 
 import dotenv from 'dotenv';
-import loadRoutes from "./routes/loadRoute";
+import loadRoutes from "./routes/permitRoute";
 import userRoutes from "./routes/userRoutes";
 const cookieParser = require("cookie-parser");
 

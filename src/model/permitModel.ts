@@ -1,20 +1,12 @@
 import mongoose from "mongoose";
 
 export interface userLoadAttributes {
-  firstName: string;
-  lastName: string;
-  email: string;
+  title: string;
+  permitNumber: string;
+  lastRenewalDate: string;
+  nextRenewalDate: string;
   company: string;
-  phone: string;
-  address: string;
-  bulb: number;
-  fan: number;
-  tv: number;
-  computer: number;
-  refrigerator: number;
-  freezer: number;
-  ac: number;
-  otherLoads: string;
+  description: string;
   _id: string;
 }
 
