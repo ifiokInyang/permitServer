@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import { sendgridEmail } from "../utils/notification";
 import User from "../model/userModel";
-import { ComparePassword, GeneratePassword, GenerateSalt, loginSchema, option, registerSchema } from "../utils/validation";
+import { ComparePassword, GeneratePassword, GenerateSalt, GenerateSignature, loginSchema, option, registerSchema } from "../utils/validation";
 
 const Register = async (req: Request, res: Response) => {
   try {
@@ -74,8 +74,14 @@ const Login = async (req: Request, res: Response) => {
       });
     }
 
+     let signature = await GenerateSignature({
+       _id: user._id,
+       email: user.email,
+     });
+
         return res.status(200).json({
           message: "You have successfully logged in",
+          signature
         });
       
   

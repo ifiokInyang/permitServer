@@ -1,60 +1,37 @@
 import express, { Request, Response } from "express";
 import { sendgridEmail } from "../utils/notification";
 import { option} from "../utils/validation";
-import UserLoad from "../model/permitModel";
+import PermitModel from "../model/permitModel";
 
-const processLoad = async (req: Request, res: Response) => {
+const CreatePermit = async (req: Request, res: Response) => {
   try {
-    const {
-      email,
-      firstName,
-      lastName,
-      company,
-      phone,
-      address,
-      bulb,
-      fan,
-      tv,
-      computer,
-      refrigerator,
-      freezer,
-      ac,
-      otherLoads,
-    } = req.body;
-    // const validateResult = loadSchema.validate(req.body, option);
-    // if (validateResult.error) {
-    //   return res.status(400).json({
-    //     Error: validateResult.error.details[0].message,
-    //   });
-    // }
 
-    const newLoad = await UserLoad.create({
-      email,
-      firstName,
-      lastName,
+    const {
+       title,
+  permitNumber,
+  lastRenewalDate,
+  nextRenewalDate,
+  company,
+  description
+    } = req.body;
+    const { id } = req.params;
+
+    const newLoad = await PermitModel.create({
+      title,
+      permitNumber,
+      lastRenewalDate,
+      nextRenewalDate,
       company,
-      phone,
-      address,
-      bulb,
-      fan,
-      tv,
-      computer,
-      refrigerator,
-      freezer,
-      ac,
-      otherLoads,
+      description,
     });
 
-    const message =
-      "We have received your load request and we will respond to you shortly about your quotation.";
-    sendgridEmail(email, firstName, message);
-    return res.status(200).json({
-      message:
-        "We have received your information, Kindly check your mail for a follow-up on your quote.",
+    // sendgridEmail(ti, firstName, message);
+    return res.status(201).json({
+      message: "Permit successfully added",
     });
   } catch (error) {
     return res.status(500).json({
-      Error: "Internal server error /get-loads",
+      Error: "Internal server error /permits/create",
       error,
     });
   }
@@ -62,5 +39,5 @@ const processLoad = async (req: Request, res: Response) => {
 
 
 export default {
-  processLoad,
+  CreatePermit,
 };

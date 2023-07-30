@@ -1,5 +1,8 @@
 import Joi from "joi";
 import bcrypt from "bcrypt";
+import { AuthPayload } from "../interface/auth.dto";
+import jwt, { JwtPayload } from "jsonwebtoken";
+
 
 export const registerSchema = Joi.object().keys({
   name: Joi.string().required(),
@@ -36,3 +39,14 @@ export const loginSchema = Joi.object().keys({
   email: Joi.string().required(),
   password: Joi.string().required(),
 });
+
+
+export const GenerateSignature = async (payload: AuthPayload) => {
+  try {
+    return jwt.sign(payload, process.env.APP_SECRET as string, {
+      expiresIn: "1d",
+    });
+  } catch (error) {
+    throw "could not create a token";
+  } /*1d means 1 day */
+};

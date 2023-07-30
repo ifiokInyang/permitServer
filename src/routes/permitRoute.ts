@@ -1,8 +1,8 @@
 import express from "express";
-import loadController from "../controller/permitController"
+import permitController from "../controller/permitController"
 
 const router = express.Router()
 
 
-router.post("/get-load", loadController.processLoad)
+router.post("/create", permitController.CreatePermit)
 export default router;
