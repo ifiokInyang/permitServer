@@ -7,19 +7,19 @@ export interface permitAttributes {
   nextRenewalDate: string;
   company: string;
   description: string;
+  userId: string;
   _id: string;
 }
 
 const PermitSchema = new mongoose.Schema(
   {
-     title: { type: String, required: true },
-  permitNumber: { type: String, required: true },
-  lastRenewalDate: { type: String, required: true },
-  nextRenewalDate: { type: String, required: true },
-  company: { type: String, required: true },
-  description: { type: String, required: true },
-    
-
+    title: { type: String, required: true },
+    permitNumber: { type: String, required: true },
+    lastRenewalDate: { type: String, required: true },
+    nextRenewalDate: { type: String, required: true },
+    company: { type: String, required: true },
+    description: { type: String, required: true },
+    userId: { type: String, required: true },
   },
   {
     timestamps: true,
