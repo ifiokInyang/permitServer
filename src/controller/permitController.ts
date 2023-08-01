@@ -19,6 +19,7 @@ const CreatePermit = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     const user = await User.findById(id);
+    console.log("user is ", user)
 
     const newPermit = await PermitModel.create({
       title,
@@ -40,6 +41,8 @@ const CreatePermit = async (req: Request, res: Response) => {
     const nextRenewal = moment(nextRenewalDate);
     const daysDifference = nextRenewal.diff(currentDate, "days");
     const hoursDifference = nextRenewal.diff(currentDate, "hours");
+    console.log("hours diff is ", hoursDifference)
+        console.log("days diff is ", daysDifference);
 
     // Schedule email based on the time differences
     if (daysDifference > 30) {
@@ -75,6 +78,41 @@ console.log("got to this point")
       console.log("i ran")
       const reminderDate = nextRenewal
         .subtract(23, "hours")
+        .format("YYYY-MM-DD HH:mm:ss");
+      scheduleEmail(reminderDate, user?.email!, user?.name!, title);
+    }
+    if (hoursDifference >= 22) {
+      console.log("i ran 22");
+      const reminderDate = nextRenewal
+        .subtract(22, "hours")
+        .format("YYYY-MM-DD HH:mm:ss");
+      scheduleEmail(reminderDate, user?.email!, user?.name!, title);
+    }
+    if (hoursDifference >= 20) {
+      console.log("i ran 20");
+      const reminderDate = nextRenewal
+        .subtract(20, "hours")
+        .format("YYYY-MM-DD HH:mm:ss");
+      scheduleEmail(reminderDate, user?.email!, user?.name!, title);
+    }
+    if (hoursDifference >= 15) {
+      console.log("i ran");
+      const reminderDate = nextRenewal
+        .subtract(15, "hours")
+        .format("YYYY-MM-DD HH:mm:ss");
+      scheduleEmail(reminderDate, user?.email!, user?.name!, title);
+    }
+    if (hoursDifference >= 10) {
+      console.log("i ran");
+      const reminderDate = nextRenewal
+        .subtract(10, "hours")
+        .format("YYYY-MM-DD HH:mm:ss");
+      scheduleEmail(reminderDate, user?.email!, user?.name!, title);
+    }
+    if (hoursDifference >= 5) {
+      console.log("i ran");
+      const reminderDate = nextRenewal
+        .subtract(5, "hours")
         .format("YYYY-MM-DD HH:mm:ss");
       scheduleEmail(reminderDate, user?.email!, user?.name!, title);
     }
