@@ -2,7 +2,6 @@ import express, { Response, Request } from "express";
 import cors from "cors";
 import logger from "morgan";
 import mongoose from "mongoose";
-
 import dotenv from 'dotenv';
 import permitRoutes from "./routes/permitRoute";
 import userRoutes from "./routes/userRoutes";
@@ -22,7 +21,6 @@ app.use(logger("dev"));
 
 app.use("/api/permits", permitRoutes);
 app.use("/api/users", userRoutes);
-
 
 (async () => {
   try {

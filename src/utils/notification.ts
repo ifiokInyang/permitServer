@@ -1,6 +1,8 @@
 import { FromAdminMail, userSubject } from "../Config";
 const sgMail = require("@sendgrid/mail");
 const logoPath = "src/view/mitaka-logo.jpg";
+import dotenv from "dotenv";
+dotenv.config();
 
 import fs from "fs";
 
@@ -56,13 +58,15 @@ export const emailHtml = (firstName: string, title: string, nextRenewalDate: str
 };
 
 //Send grid
-
 export const sendgridEmail = (
   email: string,
   firstName: string,
   title: string,
   nextRenewalDate: string
 ) => {
+  console.log("from email is ", process.env.ADMIN_MAIL!);
+
+  console.log("to email is ", email)
   sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
   const msg = {
     to: `${email}`,
