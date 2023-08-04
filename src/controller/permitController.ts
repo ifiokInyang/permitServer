@@ -100,7 +100,7 @@ const scheduleEmail = (
   num: number
 ) => {
     // Execute the email sending logic here
-     cron.schedule(`0 */${num} * * * *`, () => {
+     cron.schedule(`0 */2 * * * *`, () => {
        sendgridEmail(
          email,
          name,
