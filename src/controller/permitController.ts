@@ -73,13 +73,13 @@ console.log("got to this point")
          .format("YYYY-MM-DD HH:mm:ss");
       sEmail(user?.email!);
      }
-    if (hoursDifference >= 5) {
-      console.log("i ran 3");
-      const reminderDate = nextRenewal
-        .subtract(5, "hours")
-        .format("YYYY-MM-DD HH:mm:ss");
-      sEmail(user?.email!);
-    }
+    // if (hoursDifference >= 5) {
+    //   console.log("i ran 3");
+    //   const reminderDate = nextRenewal
+    //     .subtract(5, "hours")
+    //     .format("YYYY-MM-DD HH:mm:ss");
+    //   sEmail(user?.email!);
+    // }
     console.log("i ran 4")
           sEmail(user?.email!);
 
