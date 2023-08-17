@@ -1,10 +1,61 @@
-import { FromAdminMail, userSubject } from "../Config";
 const sgMail = require("@sendgrid/mail");
 const logoPath = "src/view/mitaka-logo.jpg";
 import dotenv from "dotenv";
 dotenv.config();
 
 import fs from "fs";
+
+import nodemailer from "nodemailer";
+
+
+const transport = nodemailer.createTransport({
+  service: "gmail" /*service and host are the same thing */,
+  auth: {
+    user: process.env.GMAIL_USER!,
+    pass: process.env.GMAIL_PASS!,
+  },
+  tls: {
+    rejectUnauthorized: false,
+  },
+});
+
+
+
+// export const sendgridEmail = (
+//   email: string,
+//   firstName: string,
+//   title: string,
+//   nextRenewalDate: string
+// ) => {
+
+export const mailSent = async (
+  from: string,
+  to: string,
+  subject: string,
+  html: string
+) => {
+  try {
+    const response = await transport.sendMail({
+      from,
+      to,
+      subject,
+      html,
+    });
+    console.log("mail sent")
+    return response;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
+
+
+
+
+
+
+
 
 const encodeImageToBase64 = (filePath: string): string => {
   const imageBuffer = fs.readFileSync(filePath);
@@ -64,9 +115,6 @@ export const sendgridEmail = (
   title: string,
   nextRenewalDate: string
 ) => {
-  console.log("from email is ", process.env.ADMIN_MAIL!);
-
-  console.log("to email is ", email)
   sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
   const msg = {
     to: `${email}`,

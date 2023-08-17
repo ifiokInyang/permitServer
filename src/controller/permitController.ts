@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { sendgridEmail } from "../utils/notification";
+import { emailHtml, mailSent, sendgridEmail } from "../utils/notification";
 import { option } from "../utils/validation";
 import PermitModel from "../model/permitModel";
 import User from "../model/userModel";
@@ -60,26 +60,29 @@ console.log("got to this point")
     // Schedule email 23 hours before the next renewal date
 
     if (hoursDifference >= 7) {
-      console.log("i ran");
+      console.log("i ran 1");
       const reminderDate = nextRenewal
         .subtract(7, "hours")
         .format("YYYY-MM-DD HH:mm:ss");
-      scheduleEmail(reminderDate, user?.email!, user?.name!, title, 7);
+      sEmail(user?.email!);
     }
      if (hoursDifference >= 6) {
-       console.log("i ran");
+       console.log("i ran 2");
        const reminderDate = nextRenewal
          .subtract(6, "hours")
          .format("YYYY-MM-DD HH:mm:ss");
-       scheduleEmail(reminderDate, user?.email!, user?.name!, title, 6);
+      sEmail(user?.email!);
      }
     if (hoursDifference >= 5) {
-      console.log("i ran");
+      console.log("i ran 3");
       const reminderDate = nextRenewal
         .subtract(5, "hours")
         .format("YYYY-MM-DD HH:mm:ss");
-      scheduleEmail(reminderDate, user?.email!, user?.name!, title, 5);
+      sEmail(user?.email!);
     }
+    console.log("i ran 4")
+          sEmail(user?.email!);
+
     // Schedule the email for the exact next renewal date
     const nextRenewalDateString = moment(nextRenewalDate).format("YYYY-MM-DD");
     // scheduleEmail(nextRenewalDateString, user?.email!, user?.name!, title);
@@ -100,6 +103,7 @@ const scheduleEmail = (
   num: number
 ) => {
     // Execute the email sending logic here
+  console.log("cron schedule")
      cron.schedule(`0 */2 * * * *`, () => {
        sendgridEmail(
          email,
@@ -109,6 +113,16 @@ const scheduleEmail = (
        );
      });
 };
+
+const html = emailHtml("Ifiok", "title", "nextdate")
+
+const sEmail = async (email: string) => {
+  cron.schedule(`*/2 * * * *`, async () => {
+    console.log("Email sent at", new Date())
+    await sendgridEmail(email,"ifiok","Check permit","nextTomorrow")
+    //  await mailSent("admin@mitakatradeafrica.com", email, "Permit expiring soon", html)
+   });
+}
 
 export default {
   CreatePermit,
