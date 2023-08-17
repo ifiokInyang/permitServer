@@ -21,7 +21,7 @@ const CreatePermit = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     const user = await User.findById(id);
-    console.log("user is ", user)
+    console.log("user is ", user);
 
     const newPermit = await PermitModel.create({
       title,
@@ -38,54 +38,61 @@ const CreatePermit = async (req: Request, res: Response) => {
       message: "Permit successfully added",
     });
 
-   
     // Calculate time differences between dates
-    const currentDate = moment();
-    const nextRenewal = moment(nextRenewalDate);
-    const daysDifference = nextRenewal.diff(currentDate, "days");
-    const hoursDifference = nextRenewal.diff(currentDate, "hours");
-    console.log("hours diff is ", hoursDifference)
-        console.log("days diff is ", daysDifference);
+    const nextRenewalMoment = moment(
+      nextRenewalDate + " 00:00:00",
+      "YYYY-MM-DD HH:mm:ss"
+    );
+    const lastRenewalMoment = moment(
+      lastRenewalDate + " 00:00:00",
+      "YYYY-MM-DD HH:mm:ss"
+    );
 
-    // Schedule email based on the time differences
-    // if (daysDifference > 30) {
-    //   const reminderDate1 = nextRenewal
-    //     .subtract(30, "days")
-    //     .format("YYYY-MM-DD");
-    //   scheduleEmail(reminderDate1, user?.email!, user?.name!, title);
-    // }
+    const hoursDifference2 = nextRenewalMoment.diff(lastRenewalMoment, "hours");
+    console.log("hours difference is ", hoursDifference2);
 
+    const intervalsHours = [
+      hoursDifference2 / 2,
+      hoursDifference2 / 4,
+      hoursDifference2 / 8,
+    ];
+    const secondsDifference = nextRenewalMoment.diff(
+      lastRenewalMoment,
+      "seconds"
+    );
 
-console.log("got to this point")
-    // Schedule email 23 hours before the next renewal date
+    const intervals = [
+      secondsDifference / 2,
+      secondsDifference / 4,
+      secondsDifference / 8,
+    ];
 
-    if (hoursDifference >= 7) {
-      console.log("i ran 1");
-      const reminderDate = nextRenewal
-        .subtract(7, "hours")
-        .format("YYYY-MM-DD HH:mm:ss");
-      sEmail(user?.email!);
-    }
-     if (hoursDifference >= 6) {
-       console.log("i ran 2");
-       const reminderDate = nextRenewal
-         .subtract(6, "hours")
-         .format("YYYY-MM-DD HH:mm:ss");
-      sEmail(user?.email!);
-     }
-    // if (hoursDifference >= 5) {
-    //   console.log("i ran 3");
-    //   const reminderDate = nextRenewal
-    //     .subtract(5, "hours")
-    //     .format("YYYY-MM-DD HH:mm:ss");
-    //   sEmail(user?.email!);
-    // }
-    console.log("i ran 4")
-          sEmail(user?.email!);
+    let emailCounter = 0;
 
-    // Schedule the email for the exact next renewal date
-    const nextRenewalDateString = moment(nextRenewalDate).format("YYYY-MM-DD");
-    // scheduleEmail(nextRenewalDateString, user?.email!, user?.name!, title);
+    let intervalHandler = setInterval(() => {
+      if (emailCounter < intervals.length) {
+        const intervalInSeconds = intervals[emailCounter];
+        sEmail(user?.email!, nextRenewalDate);
+        emailCounter++;
+
+        if (emailCounter === 1) {
+          clearInterval(intervalHandler); // Clear the interval after the first email
+          setTimeout(() => {
+            intervalHandler = setInterval(() => {
+              if (emailCounter < intervals.length) {
+                sEmail(user?.email!, nextRenewalDate);
+                emailCounter++;
+              } else {
+                clearInterval(intervalHandler);
+                console.log("Email sending has stopped");
+              }
+            }, intervalInSeconds * 1000); // Convert to milliseconds
+          }, (intervalInSeconds * 1000) / 2); // Wait half of the interval before setting up the next interval
+        }
+      } else {
+        console.log("Email sending has stopped");
+      }
+    }, 0); // Immediate execution after intervalHandler is cleared
   } catch (error) {
     return res.status(500).json({
       Error: "Internal server error /permits/create",
@@ -95,33 +102,13 @@ console.log("got to this point")
 };
 
 // Function to schedule email using 'node-schedule'
-const scheduleEmail = (
-  reminderDate: string,
-  email: string,
-  name: string,
-  title: string,
-  num: number
-) => {
-    // Execute the email sending logic here
-  console.log("cron schedule")
-     cron.schedule(`0 */2 * * * *`, () => {
-       sendgridEmail(
-         email,
-         name,
-         title,
-         reminderDate
-       );
-     });
-};
 
 const html = emailHtml("Ifiok", "title", "nextdate")
 
-const sEmail = async (email: string) => {
-  cron.schedule(`*/2 * * * *`, async () => {
-    console.log("Email sent at", new Date())
-    await sendgridEmail(email,"ifiok","Check permit","nextTomorrow")
-    //  await mailSent("admin@mitakatradeafrica.com", email, "Permit expiring soon", html)
-   });
+const sEmail = async (email: string, renewalDate: string) => {
+    console.log("email function triggered");
+  sendgridEmail(email, "Ifiok", "Expiry", renewalDate)
+  console.log("line after email function triggered")
 }
 
 export default {
